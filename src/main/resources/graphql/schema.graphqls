@@ -1,0 +1,25 @@
+# Aqui definimos los tipos y las operaciones de nuestra app
+
+# Con el tipo tarea definimos la estructura que tendrá cada tarea que se cree
+type Tarea {
+  id: ID!
+  titulo: String!
+  descripcion: String
+  hecha: Boolean!
+}
+
+# Las querys son las consultas que el cliente podrá reliazar para leer datos
+type Query {
+  # Podemos buscar una tarea por id
+  tareaById(id: ID!): Tarea
+  # O listar todas las tareas
+  allTareas: [Tarea!]!
+}
+
+# Las mutation son las consultas que el cliente podrá realizar para modificar datos en el servidor
+type Mutation {
+  # Podemos crear nuevas tareas
+  addTarea(titulo: String!, descripcion: String): Tarea!
+  # O marcarlas como completadas
+  marcarTareaHecha(id: ID!): Tarea!
+}
