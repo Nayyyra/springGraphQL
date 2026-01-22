@@ -1,25 +1,34 @@
-# Aqui definimos los tipos y las operaciones de nuestra app
-
-# Con el tipo tarea definimos la estructura que tendrá cada tarea que se cree
+# 1. El Tipo (El molde)
 type Tarea {
-  id: ID!
-  titulo: String!
-  descripcion: String
-  hecha: Boolean!
+    id: ID!
+    titulo: String!
+    descripcion: String
+    estado: String!  # PENDIENTE, EN_PROGRESO, COMPLETADO
 }
 
-# Las querys son las consultas que el cliente podrá reliazar para leer datos
+# 2. Las Consultas (Lectura)
 type Query {
-  # Podemos buscar una tarea por id
-  tareaById(id: ID!): Tarea
-  # O listar todas las tareas
-  allTareas: [Tarea!]!
+    # Permite elegir el origen de los datos con el booleano
+    # FILTRO NUEVO: opcional por estado (PENDIENTE, COMPLETADO...)
+    allTareas(estado: String, desdeBBDD: Boolean!): [Tarea!]!
+
+    # Permite buscar por ID eligiendo el origen de los datos
+    tareaById(id: ID!, desdeBBDD: Boolean!): Tarea
 }
 
-# Las mutation son las consultas que el cliente podrá realizar para modificar datos en el servidor
+# 3. Las Mutaciones (Escritura)
 type Mutation {
-  # Podemos crear nuevas tareas
-  addTarea(titulo: String!, descripcion: String): Tarea!
-  # O marcarlas como completadas
-  marcarTareaHecha(id: ID!): Tarea!
+    # Crear tarea eligiendo si va a la BBDD o no
+    addTarea(titulo: String!, descripcion: String, guardarEnBBDD: Boolean!): Tarea!
+
+    # Cambiar estado de una tarea
+    cambiarEstado(id: ID!, estado: String!, enBBDD: Boolean!): Tarea!
+
+    # ELIMINAR NUEVO: Borra tarea (devuelve true/false)
+    eliminarTarea(id: ID!, enBBDD: Boolean!): Boolean!
+}
+
+type Subscription {
+    # Te avisa cada vez que alguien añade una tarea nueva
+    tareaAnadida: Tarea
 }
