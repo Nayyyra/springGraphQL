@@ -47,89 +47,104 @@ docker compose up -d
 y SQL en localhost:3307 (puerto cambiado para evitar conflictos)
 
 2. Backend GraphQL
-mvn clean spring-boot:run
+mvn clean spring-boot:run -Dspring.profiles.active=docker
 API en http://localhost:8080/graphiql
 
 3. Verificar
 http://localhost:8080/graphiql
 Probar la API
 
-- Query (leer todas las tareas)
-query {
-  allTareas(desdeBBDD: false) {
-    id
-    titulo
-    descripcion
-    estado
-  }
-}
+# Query (leer todas las tareas)
+    query {
+      allTareas(desdeBBDD: false) {
+        id
+        titulo
+        descripcion
+        estado
+      }
+    }
 
-- Mutación (crear tarea)
-mutation {
-  addTarea(
-    titulo: "Mi primera tarea"
-    descripcion: "Desde GraphiQL"
-    guardarEnBBDD: false
-  ) {
+# Query con filtro (solo tareas con estado PENDIENTE)
+    query {
+    allTareas(estado: "PENDIENTE", desdeBBDD: false) {
     id
     titulo
     estado
-  }
+    }
 }
 
-- Suscripción (recibir actualización automática cuando se añada una nueva tarea)
-  subscription {                                                                                                                                                                                                                                                                                                   
-  tareaAnadida {                                                                                                                                                                                                                                                                                                 
-  id                                                                                                                                                                                                                                                                                                           
-  titulo                                                                                                                                                                                                                                                                                                       
-  descripcion                                                                                                                                                                                                                                                                                                  
-  estado                                                                                                                                                                                                                                                                                                       
+# Mutación (crear tarea)
+    mutation {
+      addTarea(
+        titulo: "Mi primera tarea"
+        descripcion: "Desde GraphiQL"
+        guardarEnBBDD: false
+      ) {
+        id
+        titulo
+        estado
+      }
+    }
+
+# Suscripción (recibir actualización automática cuando se añada una nueva tarea)
+    subscription {                                                                                                                                                                                                                                                                                                   
+    areaAnadida {                                                                                                                                                                                                                                                                                                 
+    id                                                                                                                                                                                                                                                                                                           
+    titulo                                                                                                                                                                                                                                                                                                       
+    descripcion                                                                                                                                                                                                                                                                                                  
+    estado                                                                                                                                                                                                                                                                                                       
   }                                                                                                                                                                                                                                                                                                              
-  }
-
-- Cambiar estado
-mutation {
-  cambiarEstado(id: 1, estado: "COMPLETADO", enBBDD: false) {
-    id
-    estado
-  }
 }
 
-· Configuración MySQL (Opcional)
-application.properties ya configurado:
+# Cambiar estado
+    mutation {
+      cambiarEstado(id: 1, estado: "COMPLETADO", enBBDD: false) {
+        id
+        estado
+      }
+    }
 
+# Eliminar tarea (DELETE)
+    mutation {
+    eliminarTarea(id: 1, enBBDD: false)
+    }
+
+## Configuración MySQL (Opcional)
+- application.properties ya configurado:
 spring.datasource.url=jdbc:mysql://localhost:3307/todo?...
-MySQL Workbench:
 
-Host: localhost
+# MySQL Workbench:
 
-Port: 3307
+- Host: localhost
+    
+- Port: 3307
+    
+- User: root
+    
+- Password: (vacío)
 
-User: root
+# Parar todo
+- Backend
+   Ctrl+C
 
-Password: (vacío)
-
-· Parar todo
-## Backend
-Ctrl+C
-
-## Docker
+# Docker
 docker compose down
-- Funcionalidades implementadas
+ 
+## Funcionalidades implementadas
 
-· GraphQL Schema-first
+- GraphQL Schema-first
 
-· Queries: allTareas(), tareaById()
+- Queries: allTareas(estado?), tareaById()
 
-· Mutations: addTarea(), cambiarEstado()
+- Mutations: addTarea(), cambiarEstado(), eliminarTarea()
 
-· Dual storage: Lista local OR MySQL
+- Dual storage: Lista local OR MySQL
 
-· Spring Data JPA + H2 (desarrollo)
+- Spring Data JPA + H2 (desarrollo)
 
-· Docker MySQL (producción)
+- Docker MySQL (producción)
 
-· GraphiQL UI (/graphiql)
+- GraphiQL UI (/graphiql)
 
 ## Posibles problemas y sus soluciones
 Problema	                Solución
@@ -137,14 +152,22 @@ Puerto 3306 ocupado	    Docker ya usa 3307
 Puerto 8080 ocupado	    server.port=8081
 404 en /graphiql	    Usa /graphql con Postman POST
 No conecta MySQL	    docker ps + docker logs todo-mysql
+Filtro no funciona      Revisa que TareaRepository tenga findByEstado(String estado).
+
 
 ## Tecnologías
-Spring Boot 4.0.1
-Spring GraphQL
-Spring Data JPA
-Hibernate 7.2
-MySQL 8.0 (Docker)
-Maven
-Java 21
-GraphiQL
+- Spring Boot 4.0.1
+- Spring GraphQL
+- Spring Data JPA
+- Hibernate 7.2
+- MySQL 8.0 (Docker)
+- Maven
+- Java 21
+- GraphiQL
+
 Solo hay que hacer docker compose up -d + mvn spring-boot:run
+
+## Equipo de desarrollo
+- Nayra
+- Ana
+- Ainhoa
