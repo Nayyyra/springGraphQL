@@ -3,13 +3,13 @@ type Tarea {
     id: ID!
     titulo: String!
     descripcion: String
-    estado: String!  # PENDIENTE, EN_PROGRESO, COMPLETADO
+    estado: String!  # Puede ser: PENDIENTE, EN_PROGRESO, COMPLETADO
 }
 
 # 2. Las Consultas (Lectura)
 type Query {
-    # Permite elegir el origen de los datos con el booleano
-    # FILTRO NUEVO: opcional por estado (PENDIENTE, COMPLETADO...)
+    # Permite elegir el origen de los datos con un boolean
+    # Posibilidad de filtrar por estado (PENDIENTE, COMPLETADO...)
     allTareas(estado: String, desdeBBDD: Boolean!): [Tarea!]!
 
     # Permite buscar por ID eligiendo el origen de los datos
@@ -24,7 +24,7 @@ type Mutation {
     # Cambiar estado de una tarea
     cambiarEstado(id: ID!, estado: String!, enBBDD: Boolean!): Tarea!
 
-    # ELIMINAR NUEVO: Borra tarea (devuelve true/false)
+    # Borra tarea (devuelve true/false)
     eliminarTarea(id: ID!, enBBDD: Boolean!): Boolean!
 }
 

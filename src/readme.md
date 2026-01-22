@@ -39,6 +39,7 @@
 ├── mvnw.cmd
 └── readme.md
 
+
 ## Lanzamiento en 3 comandos
 
 ### 1. Base de Datos (Docker)
@@ -116,12 +117,14 @@ spring.datasource.url=jdbc:mysql://localhost:3307/todo?...
 # MySQL Workbench:
 
 - Host: localhost
-    
+
 - Port: 3307
-    
-- User: root
-    
-- Password: (vacío)
+
+- User: root_user
+
+- Password: admin
+
+- Database: to_do_list
 
 # Parar todo
 - Backend

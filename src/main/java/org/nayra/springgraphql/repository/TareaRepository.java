@@ -10,6 +10,6 @@ import java.util.List;
 public interface TareaRepository extends JpaRepository<Tarea, Long> {
     // No necesitas escribir nada aquí, JpaRepository ya trae findAll(), save(), etc.
 
-    // FILTRO NUEVO: Buscar tareas por estado (PENDIENTE, COMPLETADO...)
+    // Filtro que permite buscar tareas por estado (PENDIENTE, COMPLETADO...)
     List<Tarea> findByEstado(String estado);
 }

@@ -40,15 +40,18 @@ public class TareaController {
 
     // QUERIES
     @QueryMapping
-    // Obtener todas las tareas (MEJORADO con filtro estado)
+    // Obtener todas las tareas (con filtro de estado)
     public List<Tarea> allTareas(@Argument String estado, @Argument boolean desdeBBDD) {
         if (desdeBBDD) { // Desde la bbdd
             System.out.println("Consultando MySQL " + (estado != null ? "estado=" + estado : "TODAS"));
-            return estado == null ? tareaRepository.findAll()
-                    : tareaRepository.findByEstado(estado);
+            return estado == null ? tareaRepository.findAll() // Devuelve todas las tareas
+                    : tareaRepository.findByEstado(estado); //Devuelve solo las tareas con ese estado
         } else { // O desde la memoria local
+            // Si el estado es null, muestra todas las tareas
+            // Sino, muestra las tareas con X estado
             System.out.println("Consultando local " + (estado != null ? "estado=" + estado : "TODAS") + " (" + tareasLocales.size() + ")");
             if (estado == null) return new ArrayList<>(tareasLocales);
+            // Filtramos por estado para encontrar las que coincidan con el estado que buscamos
             return tareasLocales.stream()
                     .filter(t -> t.getEstado().equals(estado))
                     .collect(Collectors.toList());
@@ -63,6 +66,7 @@ public class TareaController {
             System.out.println("Buscando ID " + id + " en MySQL: " + (tarea.isPresent() ? "ENCONTRADA" : "NO ENCONTRADA"));
             return tarea.orElse(null);
         } else { // O desde la memoria local
+            // Filtramos por ID para encontrar la primera tarea que coincida
             Optional<Tarea> tarea = tareasLocales.stream()
                     .filter(t -> t.getId().equals(id))
                     .findFirst();
@@ -72,7 +76,6 @@ public class TareaController {
     }
 
     // MUTATIONS
-
     @MutationMapping
     // Añadir una nueva tarea
     public Tarea addTarea(@Argument String titulo, @Argument String descripcion, @Argument boolean guardarEnBBDD) {
@@ -133,6 +136,7 @@ public class TareaController {
     // Eliminar tarea por ID
     public Boolean eliminarTarea(@Argument Long id, @Argument boolean enBBDD) {
         if (enBBDD) { // En la bbdd
+            // Si existe se elimina
             if (tareaRepository.existsById(id)) {
                 tareaRepository.deleteById(id);
                 System.out.println("MySQL: Eliminada ID " + id);
@@ -140,9 +144,10 @@ public class TareaController {
             }
         } else { // O en memoria local
             boolean borrada = tareasLocales.removeIf(t -> t.getId().equals(id));
-            if (borrada) System.out.println("🗑️ Local: Eliminada ID " + id);
+            if (borrada) System.out.println("Local: Eliminada ID " + id);
             return borrada;
         }
+        // Mensaje si no se encuentra la tarea que se quiere borrar
         System.out.println("ID " + id + " no encontrada");
         return false;
     }
